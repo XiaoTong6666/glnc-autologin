@@ -1,0 +1,18 @@
+[Unit]
+Description=GLNC campus ePortal login on %I
+After=NetworkManager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/libexec/glnc-autologin.py --interface %I
+SyslogIdentifier=glnc-autologin
+TimeoutStartSec=120s
+StateDirectory=glnc-autologin
+
+StandardOutput=journal
+StandardError=journal
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict

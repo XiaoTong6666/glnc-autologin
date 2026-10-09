@@ -1,0 +1,20 @@
+[Unit]
+Description=Check GLNC connectivity and reauthenticate captive interfaces
+After=NetworkManager.service
+ConditionPathExists=/etc/glnc-autologin.conf
+
+[Service]
+Type=oneshot
+# 不指定 --interface：扫描当前已连接的物理网卡，逐接口探测，只有 GLNC 302 才认证。
+ExecStart=/usr/local/libexec/glnc-autologin.py
+SyslogIdentifier=glnc-autologin
+TimeoutStartSec=120s
+StateDirectory=glnc-autologin
+
+StandardOutput=journal
+StandardError=journal
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict

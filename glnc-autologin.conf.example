@@ -1,0 +1,18 @@
+# Prefer storing the full login identity.  Device/network parameters are discovered
+# at runtime, so this same file can be copied to another Linux machine.
+GLNC_ACCOUNT=YOUR_STUDENT_ID@cmcc
+GLNC_PASSWORD=YOUR_PASSWORD
+
+# Optional: pin a specific interface. Leave unset for automatic discovery.
+# GLNC_INTERFACE=YOUR_INTERFACE
+
+# Optional campus identity pin. This is portable across devices on the same
+# deployment and prevents sending credentials to a different Dr.COM portal.
+# GLNC_EXPECTED_PROGRAM_INDEX=YOUR_PORTAL_PROGRAM_INDEX
+
+# This is an HTTP connectivity probe matching the reference pcapng flow.
+GLNC_PROBE_URL=http://firefox-portal-detection.com/generate_204
+GLNC_DISCOVERY_TRIES=10
+GLNC_RETRY_DELAY=2
+GLNC_VERIFY_TRIES=5
+GLNC_VERIFY_DELAY=1

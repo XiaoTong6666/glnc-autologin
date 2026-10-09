@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+
+glnc-autologin.conf
+.env
+.env.*
+*.pcap
+*.pcapng
+*.har
+
+*.pem
+*.key

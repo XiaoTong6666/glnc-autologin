@@ -1,0 +1,28 @@
+#!/bin/sh
+set -eu
+
+# NetworkManager dispatcher 调用约定：$1=接口名，$2=动作。
+# 这里仅负责“什么时候启动”，不做 Portal 判断，也不接触账号密码。
+# 真正调用链：dispatcher -> systemd template -> glnc_autologin.py
+interface="${1:-}"
+action="${2:-}"
+
+case "$action" in
+    up|dhcp4-change)
+        [ -n "$interface" ] || exit 0
+        # 安装器旧版曾把 Docker bridge/VPN 也作为 systemd 实例启动，导致一堆 failed。
+        # dispatcher 只处理 NetworkManager 已连接的物理以太网/Wi-Fi。
+        device_type=$(/usr/bin/nmcli -g GENERAL.TYPE device show "$interface" 2>/dev/null || true)
+        case "$device_type" in
+            ethernet|wifi) ;;
+            *) exit 0 ;;
+        esac
+        # 不写死网卡名。把刚刚发生网络事件的接口交给 Python，Python 会绑定
+        # 该接口和它自己的源 IPv4，仅在确认 GLNC Dr.COM 302 + 实时 Portal 配置后登录。
+        # 实例名必须由 systemd-escape 处理；否则 br-xxxx 中的 '-' 在 %I 中会还原为 '/'。
+        unit=$(/usr/bin/systemd-escape --template=glnc-autologin@.service -- "$interface") || exit 0
+        /usr/bin/systemctl start --no-block "$unit" || true
+        ;;
+esac
+
+exit 0
